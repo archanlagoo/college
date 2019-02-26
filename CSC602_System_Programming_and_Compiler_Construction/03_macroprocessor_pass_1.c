@@ -23,7 +23,6 @@ struct ALA_element{
 	char var_name[VAR_SIZE];
 };
 
-// Insert into MDT
 void MDT_insert(MDT_element mdt_element, MDT_element *MDT, int *MDT_size){
 	// Check if the size is enough
 	int size = ((*MDT_size/MDT_SIZE_INIT)+1)*MDT_SIZE_INIT;
@@ -35,7 +34,6 @@ void MDT_insert(MDT_element mdt_element, MDT_element *MDT, int *MDT_size){
 	MDT[*MDT_size] = mdt_element;
 	*MDT_size++;
 }
-// Insert into MNT
 void MNT_insert(MNT_element mnt_element, MNT_element *MNT, int *MNT_size){
 	// Check if the size is enough
 	int size = ((*MNT_size/MNT_SIZE_INIT)+1)*MNT_SIZE_INIT;
@@ -47,7 +45,6 @@ void MNT_insert(MNT_element mnt_element, MNT_element *MNT, int *MNT_size){
 	MNT[*MNT_size] = mnt_element;
 	*MNT_size++;
 }
-// Insert into ALA
 void ALA_insert(ALA_element ala_element, ALA_element *ALA, int *ALA_size){
 	// Check if the size is enough
 	int size = ((*ALA_size/ALA_SIZE_INIT)+1)*ALA_SIZE_INIT;
@@ -60,15 +57,17 @@ void ALA_insert(ALA_element ala_element, ALA_element *ALA, int *ALA_size){
 	*ALA_size++;
 }
 
-void prepare_name_ala(MNT_element *MNT, MDT_element *MDT, ALA_element *ALA, int *MNT_size, int *MDT_size, int *ALA_size, int MDTC, char *line, ssize_t line_len){
+void prepare_name_ala(MNT_element *MNT, MDT_element *MDT, ALA_element *ALA, int *MNT_size, int *MDT_size, int *ALA_size, int MDTC, char line[]){
 	// Declaration
 	int i, j=0;
 	MNT_element mnt_element;
 	ALA_element ala_element;
 
 	// Read the name
-	for(i=0; i<line_len; i++){
-		if(line[i]!=' ')
+	for(i=0; i<LINE_SIZE; i++){
+		if(line[i]=='\0')
+			break;
+		else if(line[i]!=' ')
 			mnt_element.name[j++] = line[i];
 		else
 			break;
@@ -79,11 +78,13 @@ void prepare_name_ala(MNT_element *MNT, MDT_element *MDT, ALA_element *ALA, int 
 
 	// Read the arguments and add into ALA
 	j = 0;
-	for(; i<line_len; i++){
-		if(line[i]!=' ')
+	for(; i<LINE_SIZE; i++){
+		if(line[i]=='\0')
+			break;
+		else if(line[i]!=' ')
 			ala_element.var_name[j++] = line[i];
 		else{
-			
+
 		}
 	}
 }
@@ -100,25 +101,26 @@ void main(){
 	int MDT_size = 0, MNT_size=0, ALA_size=0;
 
 	// Declare file reading variables
-	FILE *file = fopen("prog.txt", "r");
-	char *line = NULL;
-	ssize_t line_len;
-	size_t len = 0;
+	FILE *file = fopen("00_macroprocessor_input.txt", "r");
+	char line[LINE_SIZE];
 
 	// Read file line by line
-	while((line_len = getline(&line, &len, file))!=-1){
+	while(fgets(line, LINE_SIZE, file)!=NULL){
 		// Check if the keyword is MACRO
-		if(strcmp(line, "MACRO")!=0){
+		printf("%d %s\n", strcmp(line,"MACRO"), line);
+		printf("%c, %c\n", line[4], line[5]);
+		if(strcmp(line, "MACRO")==0){
+        printf("====if macro: start\n");
 		/*======================================================================
 		| A macro has been declared. Read the next line and prepare the MNT    |
 		| entry with the current MDTC value/MDTC_size. Insert all the          |
 		| arguments into ALA for the macro. Enter the line into MDT.           |
 		======================================================================*/
 
-		line_len = getline(&line, &line, file);
-		
+
+
 		// Read the different words in the first line
-		prepare_name_ala(MNT, MDT, ALA, &MNT_size, &MDT_size, &ALA_size, MDT_size, line, line_len);
+		prepare_name_ala(MNT, MDT, ALA, &MNT_size, &MDT_size, &ALA_size, MDT_size, line);
 
 		/*=====================================================================*/
 		}

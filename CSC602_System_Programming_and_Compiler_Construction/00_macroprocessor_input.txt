@@ -1,0 +1,4 @@
+MACRO
+ADD &A1, &A2
+MEND
+END
