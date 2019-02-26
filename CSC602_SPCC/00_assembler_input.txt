@@ -1,0 +1,23 @@
+simple start 0 ?
+
+? balr 15 0
+
+? using * 15
+
+loop l r1 two
+
+? a r1 =f'5'
+
+? st r1 four
+
+? bne loop ?
+
+? br 14 ?
+
+r1 equ 1 ?
+
+two dc f'2' ?
+
+four ds f'1' ?
+
+end ?
