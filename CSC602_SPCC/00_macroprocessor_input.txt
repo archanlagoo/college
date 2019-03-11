@@ -1,4 +1,7 @@
 MACRO
-ADD &A1, &A2
+ADD &A1 &A2
+A 1 &A1
+B 1 &A2
 MEND
 END
+ADD D1 D2
